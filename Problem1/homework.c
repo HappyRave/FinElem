@@ -130,9 +130,3 @@ double phiy(double x[4], double y[4], double xsi, double eta)
     
     return Y;
 }
-
-
-
-
-
-
