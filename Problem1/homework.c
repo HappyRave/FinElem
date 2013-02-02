@@ -12,8 +12,8 @@ double phi(int order, double xsi, double eta);
 double phix(double x[4], double y[4], double xsi, double eta);
 double phiy(double x[4], double y[4], double xsi, double eta);
 
-double gaussJacobian(double x[4], double y[4], double xsi, double eta)
-{
+double gaussJacobian(double x[4], double y[4], double xsi, double eta) {
+
     double jacobian;
     double j[2][2];
     
@@ -27,8 +27,8 @@ double gaussJacobian(double x[4], double y[4], double xsi, double eta)
 }
 
 
-double gaussIntegrate(double x[4], double y[4], double (*f) (double, double))
-{
+double gaussIntegrate(double x[4], double y[4], double (*f) (double, double)){
+
     double I;
     
     double val=1/sqrt(3);
@@ -47,14 +47,13 @@ double gaussIntegrate(double x[4], double y[4], double (*f) (double, double))
     return I;
 }
 
-double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,double), int n)
-{
+double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,double), int n){
+
      double I;
     
     if (n==0) {
         I=gaussIntegrate(x,y,f);
-    }
-    else {
+    } else {
         double midUpX=(x[0]+x[1])/2.0;
         double midUpY=(y[0]+y[1])/2.0;
         double midLeftX=(x[1]+x[2])/2.0;
@@ -79,11 +78,12 @@ double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,doub
         I=gaussIntegrateRecursive(xNorth,yNorth,f,n-1)+gaussIntegrateRecursive(xWest,yWest,f,n-1)+gaussIntegrateRecursive(xSouth,ySouth,f,n-1)+gaussIntegrateRecursive(xEst,yEst,f,n-1);
     }
     
-     return I;
+    return I;
+
 }
 
-double phi(int order, double xsi, double eta)
-{
+double phi(int order, double xsi, double eta){
+
     double p;
     switch (order) {
         case 1:
@@ -107,8 +107,8 @@ double phi(int order, double xsi, double eta)
     return p;
 }
 
-double phix(double x[4], double y[4], double xsi, double eta)
-{
+double phix(double x[4], double y[4], double xsi, double eta){
+
     double X=0;
     int i;
     
@@ -117,10 +117,11 @@ double phix(double x[4], double y[4], double xsi, double eta)
     }
 
     return X;
+
 }
 
-double phiy(double x[4], double y[4], double xsi, double eta)
-{
+double phiy(double x[4], double y[4], double xsi, double eta){
+
     double Y=0;
     int i;
     
@@ -129,4 +130,5 @@ double phiy(double x[4], double y[4], double xsi, double eta)
     }
     
     return Y;
+
 }
