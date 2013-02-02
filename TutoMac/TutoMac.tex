@@ -43,7 +43,7 @@ literate={\$}{{\textcolor{red}{\$}}}1
 
 \section{Introduction}
 
-Salut à vous, tous les macoïdes qui galérez (ou allez galéjer dans un futur proche) avec le problème 1 en éléments finis! Si tu es sur Windows, je vais te dire la même chose que nous a dis Olivier Bonaventure, "Tant pis pour toi"! Si tu es sur Linux, certains éléments vont être semblable, d'autre pas du tout, mais moi je m'en fout, je suis pas sur Linux. Et si enfin, tu es sur Mac, ce guide est pour toi!
+Salut à vous, tous les macoïdes qui galérez (ou allez galérer dans un futur proche) avec le problème 1 en éléments finis! Si tu es sur Windows, je vais te dire la même chose que nous a dis Olivier Bonaventure, "Tant pis pour toi"! Si tu es sur Linux, certains éléments vont être semblable, d'autre pas du tout, mais moi je m'en fout, je suis pas sur Linux. Et si enfin, tu es sur Mac, ce guide est pour toi!
 
 \begin{figure}[H]
 \includegraphics[width=\linewidth]{nouveau-logo-apple.jpg}
@@ -51,7 +51,7 @@ Salut à vous, tous les macoïdes qui galérez (ou allez galéjer dans un futur 
 
 \section{The easy way: Xcode}
 
-Comme vous l'indique le titre de la section, il y a plusieurs façon de développer (= écrire des programmes barbants dans des langages bizarre) sur Mac. Personnellement j'en connais 2. La première, et la plus simple, consiste en l'utilisation de Xcode, ce programme développé par Apple, disponible seulement sur Mac, va vous assister énormément dans l'écriture de vos petites missions! Le modus operandi est très simple.
+Comme vous l'indique le titre de la section, il y a plusieurs façon de développer (= écrire des programmes barbants dans des langages bizarres) sur Mac. Personnellement j'en connais 2. La première, et la plus simple, consiste en l'utilisation de Xcode, ce programme développé par Apple, disponible seulement sur Mac, va vous assister énormément dans l'écriture de vos petites missions! Le modus operandi est très simple.
 
 \subsection{Step 1 - Start}
 \begin{minipage}[c]{.20\linewidth}
@@ -132,7 +132,24 @@ L'inconvénient du Terminal, c'est que vous êtes moins guidé que dans Xcode. P
 Vous pouvez trouver le terminal dans vos applications >> utilitaires! Suffit de lancer et bingo!
 \end{minipage}
 
-\subsection{Step 2 - Naviguer}
+\subsection{Step 2 - GCC}
+
+GCC c'est quoi? C'est le compilateur C ( et C++). C'est ce module du terminal qui va vous permettre, très bientôt de compiler vos programmes C en exécutable. Mais il y a des chances que celui-ci ne se trouve pas sur votre mac d'origine. Il faut l'installer! Pour cela, foncez à l'adresse \url{https://developer.apple.com/downloads/index.action}, inscrivez vous si c'est pas fait, et télechargez le dernier pack "Command Line Tools". Une fois installez, vous serez capable d'utiliser gcc!
+
+\begin{lstlisting}[style=Bash]
+Maxime-MBP:Desktop maximedemol$ ls
+hello.c
+Maxime-MBP:Desktop maximedemol$ gcc -o hello hello.c
+Maxime-MBP:Desktop maximedemol$ ls
+hello	hello.c
+Maxime-MBP:Desktop maximedemol$ ./hello
+Hello, world
+Maxime-MBP:Desktop maximedemol$ 
+\end{lstlisting}
+\vspace{12pt}
+
+
+\subsection{Step 3 - Naviguer}
 
 Maintenant, avant de pouvoir travailler, vous devez d'abord atteindre vos fichiers! Supposons que vous avez extrait les fichiers fournis par Legat sur votre bureau. Pour y arriver, vous allez utilisez 2 commandes.
 
@@ -152,7 +169,7 @@ Maxime-MBP:Desktop maximedemol$
 \end{lstlisting}
 \vspace{12pt}
 
-\subsection{Step 3 - Editer vos fichiers}
+\subsection{Step 4 - Editer vos fichiers}
 
 \begin{minipage}[c]{.40\linewidth}
 \includegraphics[width=\linewidth]{edit.png}
@@ -161,7 +178,7 @@ Maxime-MBP:Desktop maximedemol$
 Maintenant il vous faut écrire votre programme dans le fichier homework.c. Pour cela il suffit de double cliquer sur le fichier homework.c dans votre bureau. Si vous avez installé Xcode, il va s'ouvrir avec Xcode. Si vous avez TextMate, c'est TextMate qui prend le relai. Si vous voulez l'ouvrir avec autre chose, faites "ouvrir avec".
 \end{minipage}
 
-\subsection{Step 4 - Compiler}
+\subsection{Step 5 - Compiler}
 
 Rien de plus simple! Legat fournit gentillement un makefile, utilisons le (commande make)!
 
@@ -178,7 +195,7 @@ Maxime-MBP:Desktop maximedemol$
 
 Vous voilà en possession du fichier myFem qui est l'exécutable de votre programme!
 
-\subsection{Step 5 - Executer}
+\subsection{Step 6 - Executer}
 
 Encore plus simple que compiler!
 
@@ -203,9 +220,9 @@ Maxime-MBP:Desktop maximedemol$
 \end{lstlisting}
 \vspace{12pt}
 
-\subsection{Step 6 - Submit}
+\subsection{Step 7 - Submit}
 
-Ca marche? Ca marche bien? Foncer soumettre votre fichier homework.c qui se trouve sur le bureau! Pour plus d'info, voir section \ref{subsec:submit} page \pageref{subsec:submit}!
+Ca marche? Ca marche bien? Foncez soumettre votre fichier homework.c qui se trouve sur le bureau! Pour plus d'info, voir section \ref{subsec:submit} page \pageref{subsec:submit}!
 
 \section{Conclusion}
 

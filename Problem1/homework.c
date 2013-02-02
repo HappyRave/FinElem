@@ -10,7 +10,6 @@
 double phi(int order, double xsi, double eta);
 double varTransform(double z[4], double xsi, double eta);
 
-
 double gaussJacobian(double x[4], double y[4], double xsi, double eta) {
 
     double jacobian;
@@ -24,7 +23,6 @@ double gaussJacobian(double x[4], double y[4], double xsi, double eta) {
     
     return jacobian;
 }
-
 
 double gaussIntegrate(double x[4], double y[4], double (*f) (double, double)){
 
@@ -42,7 +40,6 @@ double gaussIntegrate(double x[4], double y[4], double (*f) (double, double)){
     
     return I;
 }
-
 
 double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,double), int n){
 
