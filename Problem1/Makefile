@@ -12,8 +12,8 @@ GLFWLIBRARY  = /Users/me/glfw277/lib/libglfw.a
 #
 CC       = gcc  
 LD       = gcc
-CFLAGS   = -O3 -Dgraphic -Wall
-LFLAGS   = -Wall -O3 -framework Cocoa -framework OpenGL -framework IOKit
+CFLAGS   = -O3 -Wall
+LFLAGS   = -Wall -O3
 LIBS     = -lm 
 #
 PROG     = myFem
