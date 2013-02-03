@@ -47,7 +47,7 @@ double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,doub
     
     if (n==0) {
 
-        I=gaussIntegrate(x,y,(*f));
+        I=gaussIntegrate(x,y,f);
 
     } else {
 
