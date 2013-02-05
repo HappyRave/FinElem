@@ -12,6 +12,7 @@ double gaussJacobian(double x[4], double y[4], double xsi, double eta);
 double gaussIntegrate(double x[4], double y[4], double (*f) (double, double));
 double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,double), int n);
 void *gaussIntegrateRecursiveParallel(void *arguments);
+double gaussIntegrateRecursiveSimple(double x[4], double y[4], double (*f)(double,double), int n);
 double phi(int order, double xsi, double eta);
 double varTransform(double z[4], double xsi, double eta);
 
@@ -57,6 +58,13 @@ double gaussIntegrate(double x[4], double y[4], double (*f) (double, double)){
 
 double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,double), int n){
     
+    if (n==0) {
+        
+        return gaussIntegrate(x,y,f);
+        
+    } else {
+
+    
     pthread_t thread1;
     pthread_t thread2;
     pthread_t thread3;
@@ -79,10 +87,10 @@ double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,doub
     GaussArgs bLQuadri = {&I[2],{midCenterX, midLeftX, x[2], midDownX},{midCenterY, midLeftY, y[2], midDownY},f,n-1};
     GaussArgs bRQuadri = {&I[3],{midRightX, midCenterX, midDownX, x[3]},{midRightY, midCenterY, midDownY, y[3]},f,n-1};
     
-    pthread_create( &thread1, NULL, &gaussIntegrateRecursiveParallel, (void*) &uRQuadri);
-    pthread_create( &thread2, NULL, &gaussIntegrateRecursiveParallel, (void*) &uLQuadri);
-    pthread_create( &thread3, NULL, &gaussIntegrateRecursiveParallel, (void*) &bLQuadri);
-    pthread_create( &thread4, NULL, &gaussIntegrateRecursiveParallel, (void*) &bRQuadri);
+    pthread_create( &thread1, NULL, gaussIntegrateRecursiveParallel, (void*) &uRQuadri);
+    pthread_create( &thread2, NULL, gaussIntegrateRecursiveParallel, (void*) &uLQuadri);
+    pthread_create( &thread3, NULL, gaussIntegrateRecursiveParallel, (void*) &bLQuadri);
+    pthread_create( &thread4, NULL, gaussIntegrateRecursiveParallel, (void*) &bRQuadri);
     
     pthread_join( thread1, NULL);
     pthread_join( thread2, NULL);
@@ -90,17 +98,26 @@ double gaussIntegrateRecursive(double x[4], double y[4], double (*f)(double,doub
     pthread_join( thread4, NULL);
     
     return I[0]+I[1]+I[2]+I[3];
+    }
 
 }
 
 void *gaussIntegrateRecursiveParallel(void *arguments)
 {
-    GaussArgs *pointer = (GaussArgs*) arguments;
+    GaussArgs *pointer;
+    pointer = (GaussArgs*) arguments;
     GaussArgs args=*pointer;
     double x[4]={args.x[0],args.x[1],args.x[2],args.x[3]};
     double y[4]={args.y[0],args.y[1],args.y[2],args.y[3]};
     double (*f)(double,double)=args.f;
     int n=args.n;
+    
+    *args.I=gaussIntegrateRecursiveSimple(x,y,f,n);
+    return 0;
+    
+}
+
+double gaussIntegrateRecursiveSimple(double x[4], double y[4], double (*f)(double,double), int n){
     
     double I;
     
@@ -130,17 +147,17 @@ void *gaussIntegrateRecursiveParallel(void *arguments)
         double bRX[4]={midRightX, midCenterX, midDownX, x[3]};
         double bRY[4]={midRightY, midCenterY, midDownY, y[3]};
         
-        I = gaussIntegrateRecursive(uRX, uRY, f, n-1)
-        + gaussIntegrateRecursive(uLX,uLY,f,n-1)
-        + gaussIntegrateRecursive(bLX,bLY,f,n-1)
-        + gaussIntegrateRecursive(bRX,bRY,f,n-1);
+        I = gaussIntegrateRecursiveSimple(uRX,uRY,f,n-1)
+        + gaussIntegrateRecursiveSimple(uLX,uLY,f,n-1)
+        + gaussIntegrateRecursiveSimple(bLX,bLY,f,n-1)
+        + gaussIntegrateRecursiveSimple(bRX,bRY,f,n-1);
         
     }
     
-    *args.I=I;
-    return 0;
+    return I;
     
 }
+
 
 double phi(int order, double xsi, double eta){
 
