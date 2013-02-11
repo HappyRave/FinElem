@@ -12,29 +12,33 @@ double earthRadius()
 
 double earthJacobian(double x[4], double y[4], double xsi, double eta, double R)
 {
-    double t[2][2];
+    double dXdXsi= ((x[0]-x[1])*(1.0+eta) + (x[3]-x[2])*(1.0-eta))/4.0;
+    double dXdEta= ((x[0]-x[3])*(1.0+xsi) + (x[1]-x[2])*(1.0-xsi))/4.0;
+    double dYdXsi= ((y[0]-y[1])*(1.0+eta) + (y[3]-y[2])*(1.0-eta))/4.0;
+    double dYdEta= ((y[0]-y[3])*(1.0+xsi) + (y[1]-y[2])*(1.0-xsi))/4.0;
+	double toRad= M_PI/180.0;
     
-    t[0][0]= (x[0]-x[1])*(1.0+eta) + (x[3]-x[2])*(1.0-eta);
-    t[0][1]= (x[0]-x[3])*(1.0+xsi) + (x[1]-x[2])*(1.0-xsi);
-    t[1][0]= (y[0]-y[1])*(1.0+eta) + (y[3]-y[2])*(1.0-eta);
-    t[1][1]= (y[0]-y[3])*(1.0+xsi) + (y[1]-y[2])*(1.0-xsi);
-    
-	double jacobianSquare=( t[0][0]*t[1][1] - t[0][1]*t[1][0] ) / 16.0;
-	
-	double jacobianSphere = fabs(R*R*sin(2*M_PI/360*varTransform(y,xsi,eta)));
-	//return jacobianSphere;
-	
-	/* FAIL */
 	double j[3][3];
-	j[0][0]=cos(2*M_PI/360*varTransform(x,xsi,eta))*cos(2*M_PI/360*varTransform(y,xsi,eta));
-	j[0][1]=R*(t[0][0])/4.0*sin(2*M_PI/360*varTransform(x,xsi,eta))*(t[1][0])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
-	j[0][2]=R*(t[0][1])/4.0*sin(2*M_PI/360*varTransform(x,xsi,eta))*(t[1][1])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
-	j[1][0]=sin(2*M_PI/360*varTransform(x,xsi,eta))*cos(2*M_PI/360*varTransform(y,xsi,eta));
-	j[1][1]=-R*(t[0][0])/4.0*cos(2*M_PI/360*varTransform(x,xsi,eta))*(t[1][0])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
-	j[1][2]=-R*(t[0][1])/4.0*cos(2*M_PI/360*varTransform(x,xsi,eta))*(t[1][1])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
-	j[2][0]=cos(2*M_PI/360*varTransform(y,xsi,eta));
-	j[2][1]=-R*(t[1][0])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
-	j[2][2]=-R*(t[1][1])/4.0*sin(2*M_PI/360*varTransform(y,xsi,eta));
+	
+	j[0][0]=cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta));
+	
+	j[0][1]=R*(-toRad*dXdXsi*sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdXsi*sin(toRad*varTransform(y,xsi,eta))*cos(toRad*varTransform(x,xsi,eta)));
+
+	
+	j[0][2]=R*(-toRad*dXdEta*sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdEta*sin(toRad*varTransform(y,xsi,eta))*cos(toRad*varTransform(x,xsi,eta)));
+	
+	j[1][0]=sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta));
+	
+	j[1][1]=R*(toRad*dXdXsi*cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdXsi*sin(toRad*varTransform(x,xsi,eta))*sin(toRad*varTransform(y,xsi,eta)));
+	
+	j[1][2]=R*(toRad*dXdEta*cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdEta*sin(toRad*varTransform(x,xsi,eta))*sin(toRad*varTransform(y,xsi,eta)));
+	
+	j[2][0]=sin(toRad*varTransform(y,xsi,eta));
+	
+	j[2][1]=R*dYdXsi*cos(toRad*varTransform(y,xsi,eta));
+	
+	j[2][2]=R*dYdEta*cos(toRad*varTransform(y,xsi,eta));
+	
 	return (j[0][0]*j[1][1]*j[2][2]+j[1][0]*j[2][1]*j[0][2]+j[2][0]*j[0][1]*j[1][2])-(j[2][0]*j[1][1]*j[0][2]+j[0][0]*j[2][1]*j[1][2]+j[1][0]*j[0][1]*j[2][2]);
 	 
 }
@@ -104,21 +108,16 @@ double earthIntegrateBathymetry(femMesh *theMesh, femGrid *theGrid, femIntegrati
 		int quad[4]={theMesh->elem[i], theMesh->elem[i+1], theMesh->elem[i+2], theMesh->elem[i+3]};
 		double theta[4]={theMesh->X[quad[0]], theMesh->X[quad[1]], theMesh->X[quad[2]], theMesh->X[quad[3]]};
 		double phi[4]={theMesh->Y[quad[0]], theMesh->Y[quad[1]], theMesh->Y[quad[2]], theMesh->Y[quad[3]]};
-		printf("theta: %f %2f %3f %4f\n", theta[0], theta[1], theta[2], theta[3]);
-		printf("phi: %f %2f %3f %4f\n", phi[0], phi[1], phi[2], phi[3]);
 		// convert to cartesian
 		double x[4];
 		double y[4];
 		double z[4];
 		int j;
 		for (j=0; j<4; j++) {
-			x[j]= radius*sin((2*M_PI/360)*theta[j])*cos((2*M_PI/360)*phi[j]);
-			y[j]= radius*cos((2*M_PI/360)*theta[j])*sin((2*M_PI/360)*phi[j]);
-			z[j]= radius*cos((2*M_PI/360)*phi[j]);
+			x[j]= radius*cos((2*M_PI/360)*theta[j])*cos((2*M_PI/360)*phi[j]);
+			y[j]= radius*sin((2*M_PI/360)*theta[j])*cos((2*M_PI/360)*phi[j]);
+			z[j]= radius*sin((2*M_PI/360)*phi[j]);
 		}
-		printf("x: %f %2f %3f %4f\n", x[0], x[1], x[2], x[3]);
-		printf("y: %f %2f %3f %4f\n", y[0], y[1], y[2], y[3]);
-		//printf("surface == %f\n",
 		
 		// integrate
 		int k; double xsi,eta,w,bat,Ielem=0.0;
@@ -128,7 +127,6 @@ double earthIntegrateBathymetry(femMesh *theMesh, femGrid *theGrid, femIntegrati
 			w=theRule->weight[k];
 			bat=-earthGridInterpolate(theGrid, varTransform(theta,xsi,eta), varTransform(phi,xsi,eta));
 			Ielem+=w*bat*earthJacobian(theta,phi,xsi,eta,radius);
-			printf("Jacob %f\n", earthJacobian(theta,phi,xsi,eta,radius));
 		}
 		I+=Ielem;
 	}
