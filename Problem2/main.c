@@ -24,8 +24,9 @@ int main(void)
     femGrid *theGrid = femGridRead("bath.txt");
     femIntegration *theRule = femIntegrationCreate(4,FEM_QUAD);
     double  R = earthRadius();
-    double  I = earthIntegrateBathymetry(theMesh,theGrid,theRule,R); 
-    printf("Sea volume = %10.3e m^3",I);
+    double  I = earthIntegrateBathymetry(theMesh,theGrid,theRule,R);
+	printf("Value on the grid in x = 15 y = 19 is %10.5e\n", earthGridInterpolate(theGrid, 15, 19));
+    printf("Sea volume = %10.3e m^3\n",I);
 
     
     // ======= Graphics 
@@ -93,6 +94,7 @@ int main(void)
     exit(0);
     
 }
+
 
 #endif
  

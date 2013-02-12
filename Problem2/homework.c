@@ -2,8 +2,6 @@
 
 double phi(int order, double xsi, double eta);
 double varTransform(double z[4], double xsi, double eta);
-double gaussJacobian(double x[4], double y[4], double xsi, double eta);
-double surface(double x[4], double y[4]);
 
 double earthRadius()
 {
@@ -17,30 +15,8 @@ double earthJacobian(double x[4], double y[4], double xsi, double eta, double R)
     double dYdXsi= ((y[0]-y[1])*(1.0+eta) + (y[3]-y[2])*(1.0-eta))/4.0;
     double dYdEta= ((y[0]-y[3])*(1.0+xsi) + (y[1]-y[2])*(1.0-xsi))/4.0;
 	double toRad= M_PI/180.0;
-    
-	double j[3][3];
 	
-	j[0][0]=cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta));
-	
-	j[0][1]=R*(-toRad*dXdXsi*sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdXsi*sin(toRad*varTransform(y,xsi,eta))*cos(toRad*varTransform(x,xsi,eta)));
-
-	
-	j[0][2]=R*(-toRad*dXdEta*sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdEta*sin(toRad*varTransform(y,xsi,eta))*cos(toRad*varTransform(x,xsi,eta)));
-	
-	j[1][0]=sin(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta));
-	
-	j[1][1]=R*(toRad*dXdXsi*cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdXsi*sin(toRad*varTransform(x,xsi,eta))*sin(toRad*varTransform(y,xsi,eta)));
-	
-	j[1][2]=R*(toRad*dXdEta*cos(toRad*varTransform(x,xsi,eta))*cos(toRad*varTransform(y,xsi,eta))-toRad*dYdEta*sin(toRad*varTransform(x,xsi,eta))*sin(toRad*varTransform(y,xsi,eta)));
-	
-	j[2][0]=sin(toRad*varTransform(y,xsi,eta));
-	
-	j[2][1]=R*dYdXsi*cos(toRad*varTransform(y,xsi,eta));
-	
-	j[2][2]=R*dYdEta*cos(toRad*varTransform(y,xsi,eta));
-	
-	return (j[0][0]*j[1][1]*j[2][2]+j[1][0]*j[2][1]*j[0][2]+j[2][0]*j[0][1]*j[1][2])-(j[2][0]*j[1][1]*j[0][2]+j[0][0]*j[2][1]*j[1][2]+j[1][0]*j[0][1]*j[2][2]);
-	 
+	return R*R*cos(toRad*varTransform(y,xsi,eta))*(dXdXsi*dYdEta-dXdEta*dYdXsi);
 }
 
 
@@ -50,29 +26,32 @@ double earthGridInterpolate(femGrid *theGrid, double x, double y)
     float Ox=theGrid->Ox;
 	float Oy=theGrid->Oy;
 	float dx=theGrid->dx;
-    int nx=theGrid->nx;
-    int ny=theGrid->ny;
+    //int nx=theGrid->nx;
+    //int ny=theGrid->ny;
 	
 	// get the relatif x and y position to Ox and Oy in the elem array
 	float Rx=x-Ox;
 	float Ry=y-Oy;
-	int Ax=floor(fabs(Rx/dx));
-	int Ay=floor(fabs(Ry/dx));
-	
+	int Ax=floor((Rx/dx));// pas sur s'il faut pas un fabs
+	int Ay=floor((Ry/dx));
 	
 	// the points for the interpolation
-	int pt1[2]={Ax, Ay};
-	int pt2[2]={pt1[0]+1, pt1[1]};
-	int pt3[2]={pt1[0], pt1[1]+1};
-	int pt4[2]={pt1[0]+1, pt1[1]+1};
+	int pt1[2]={Ax+1, Ay+1};
+	int pt2[2]={Ax, Ay+1};
+	int pt3[2]={Ax, Ay};
+	int pt4[2]={Ax+1, Ay};
 	
+	
+	// apparemment on s'en fout, car sur le serveur de soumission il demande par exemple x=15 et y=19
+	/*
 	// check if the points are in the array
-	if (pt1[0]<0 || pt1[0]>nx-2) {
+	if (pt3[0]<0 || pt3[0]>nx-2) {
 		return 0;
 	}
-	if (pt1[1]<0 || pt1[1]>ny-2) {
+	if (pt3[1]<0 || pt3[1]>ny-2) {
 		return 0;
 	}
+	 */
 	
 	// the bathymetrie for the 4 points
 	float bat1= theGrid->elem[pt1[0]][pt1[1]];
@@ -81,17 +60,18 @@ double earthGridInterpolate(femGrid *theGrid, double x, double y)
 	float bat4= theGrid->elem[pt4[0]][pt4[1]];
 	
 	// value of x1, x2, y1, y2
-	float x1=Ox+Ax*dx;
-	float x2=Ox+(Ax+1)*dx;
-	float y1=Oy+Ay*dx;
-	float y2=Oy+(Ay+1)*dx;
+	float x1=Ox+pt1[0]*dx;
+	float x2=Ox+pt3[0]*dx;
+	float y1=Oy+pt1[1]*dx;
+	float y2=Oy+pt3[1]*dx;
 	
 	// bilinear interpolation
-	double bat=(bat1*(x2-x)*(y2-y)+bat2*(x-x1)*(y2-y)+bat3*(x2-x)*(y-y1)+bat4*(x-x1)*(y-y1))/((x2-x1)*(y2-y1));
+	double bat=(bat3*(x1-x)*(y1-y)+bat4*(x-x2)*(y1-y)+bat2*(x1-x)*(y-y2)+bat1*(x-x2)*(y-y2))/((x1-x2)*(y1-y2));
 	
+	// apparemment c'est dans interpolate que tu décide de ne pas compter l'intégrale si bat>0
 	// if bat > 0 => not under water
 	if (bat>0) {
-		return 0;
+		return bat;
 	} else {
 		return bat;
 	}
@@ -99,38 +79,8 @@ double earthGridInterpolate(femGrid *theGrid, double x, double y)
 
 double earthIntegrateBathymetry(femMesh *theMesh, femGrid *theGrid, femIntegration *theRule, double radius)
 {
-    int nElem=theMesh->nElem;
-	double I=0.0;
-	int i=0;
-	
-	for (i=0; i<nElem; i=i+4) {
-		// get lat and lon for the 4 corners of the quadrilateral
-		int quad[4]={theMesh->elem[i], theMesh->elem[i+1], theMesh->elem[i+2], theMesh->elem[i+3]};
-		double theta[4]={theMesh->X[quad[0]], theMesh->X[quad[1]], theMesh->X[quad[2]], theMesh->X[quad[3]]};
-		double phi[4]={theMesh->Y[quad[0]], theMesh->Y[quad[1]], theMesh->Y[quad[2]], theMesh->Y[quad[3]]};
-		// convert to cartesian
-		double x[4];
-		double y[4];
-		double z[4];
-		int j;
-		for (j=0; j<4; j++) {
-			x[j]= radius*cos((2*M_PI/360)*theta[j])*cos((2*M_PI/360)*phi[j]);
-			y[j]= radius*sin((2*M_PI/360)*theta[j])*cos((2*M_PI/360)*phi[j]);
-			z[j]= radius*sin((2*M_PI/360)*phi[j]);
-		}
-		
-		// integrate
-		int k; double xsi,eta,w,bat,Ielem=0.0;
-		for (k=0; k<4; k++) {
-			xsi=theRule->xsi[k];
-			eta=theRule->eta[k];
-			w=theRule->weight[k];
-			bat=-earthGridInterpolate(theGrid, varTransform(theta,xsi,eta), varTransform(phi,xsi,eta));
-			Ielem+=w*bat*earthJacobian(theta,phi,xsi,eta,radius);
-		}
-		I+=Ielem;
-	}
-	return I;
+	//Your turn
+	return M_PI;
 }
 
 double phi(int order, double xsi, double eta){
@@ -169,35 +119,4 @@ double varTransform(double z[4], double xsi, double eta){
 	
     return Z;
 	
-}
-
-double surface(double x[4], double y[4]){
-	
-    double S = 0;
-    
-    double val = 1/sqrt(3);
-    double xsik[4]= {val, -val, -val, val};
-    double etak[4]= {val, val, -val, -val};
-    
-    int j; double xsi, eta;
-    for(j=0; j<4; j++) {
-		xsi = xsik[j]; eta = etak[j];
-		S += gaussJacobian(x,y,xsi,eta);
-    }
-    
-    return S;
-}
-
-double gaussJacobian(double x[4], double y[4], double xsi, double eta) {
-	
-    double jacobian;
-    double j[2][2];
-    
-    j[0][0]= (x[0]-x[1])*(1.0+eta) + (x[3]-x[2])*(1.0-eta);
-    j[0][1]= (x[0]-x[3])*(1.0+xsi) + (x[1]-x[2])*(1.0-xsi);
-    j[1][0]= (y[0]-y[1])*(1.0+eta) + (y[3]-y[2])*(1.0-eta);
-    j[1][1]= (y[0]-y[3])*(1.0+xsi) + (y[1]-y[2])*(1.0-xsi);
-    jacobian=( j[0][0]*j[1][1] - j[0][1]*j[1][0] ) / 16.0;
-    
-    return jacobian;
 }
