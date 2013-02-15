@@ -17,4 +17,4 @@ Programme permettant l'intégration de la bathymétrie de la mer Méditerranée sur 
 
 
 
-.._NOAA: http://www.ngdc.noaa.gov/mgg/gdas/gd_designagrid.html
+.. _NOAA: http://www.ngdc.noaa.gov/mgg/gdas/gd_designagrid.html
