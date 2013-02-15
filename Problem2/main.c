@@ -25,7 +25,7 @@ int main(void)
     femIntegration *theRule = femIntegrationCreate(4,FEM_QUAD);
     double  R = earthRadius();
     double  I = earthIntegrateBathymetry(theMesh,theGrid,theRule,R);
-	printf("Value on the grid in x = 15 y = 19 is %10.5e\n", earthGridInterpolate(theGrid, 15, 19));
+	printf("Value on the grid in x = 15 y = 30 is %10.5e\n", earthGridInterpolate(theGrid, 15, 30));
     printf("Sea volume = %10.3e m^3\n",I);
 
     
