@@ -6,12 +6,17 @@ Tous les documents et codes sources relatifs aux problèmes et projets du cours d
 Homework1: Intégration sur un quadrilatère
 ------------------------------------------
 
-Programme simple permettant d'intégrer une fonction 2D quelconque sur un quadrilatère quelconque utilisant la règle d'intégration de Gauss-Legendre sur 4 points
+Programme simple permettant d'intégrer une fonction 2D quelconque sur un quadrilatère quelconque utilisant la règle d'intégration de Gauss-Legendre sur 4 points.
 
 Homework2: Volume de la mer Méditerranée
 --------------------------------------------------
 
-Programme permettant l'intégration de la bathymétrie de la mer Méditerranée sur un maillage non-structuré de quadrilatères quelconque en utilisant une règle d'intégration quelconque (à la base, Gauss-Legendre). Le mesh provient du NOAA_
+Programme permettant l'intégration de la bathymétrie de la mer Méditerranée sur un maillage non-structuré de quadrilatères quelconque en utilisant une règle d'intégration quelconque (à la base, Gauss-Legendre). Le mesh provient du NOAA_.
+
+Homework3: Calcul de la longueur du littoral de la mer
+-------------------------------------------------------
+
+Programme permettant le gestion, le tri, et la sélection des segments dans un meshGrid. Une fois les segments extérieurs trouvés et sélectionnés, la détermination de la longueur du littoral est possible. 
 
 
 
