@@ -20,12 +20,12 @@ double      edgeBoundaryLength(femEdges *theEdges);
 
 int main(void)
 {   
-    femMesh  *theMesh  = femMeshRead("stupid.txt");       
+    femMesh  *theMesh  = femMeshRead("triangles.txt");
     femEdges *theEdges = femEdgesCreate(theMesh);    
     
-    edgeExpand(theEdges);                   femEdgesPrint(theEdges);
-    edgeSort(theEdges);                     femEdgesPrint(theEdges);
-    //edgeShrink(theEdges);                   femEdgesPrint(theEdges);
+    edgeExpand(theEdges);                   //femEdgesPrint(theEdges);
+    edgeSort(theEdges);                     //femEdgesPrint(theEdges);
+    edgeShrink(theEdges);                   //femEdgesPrint(theEdges);
     printf("Boundary edges  : %i \n", theEdges->nBoundary);
     printf("Boundary length : %14.7e \n", edgeBoundaryLength(theEdges));
 
