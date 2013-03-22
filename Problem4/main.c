@@ -17,7 +17,7 @@ void     diffusionSolve(femDiffusionProblem *theProblem);
 
 int main(void)
 {   
-    femDiffusionProblem* theProblem = diffusionCreate("quads_79.txt");
+    femDiffusionProblem* theProblem = diffusionCreate("triangles_6315.txt");
     diffusionSolve(theProblem);   
  
     printf("Number of elements : %4d\n", theProblem->mesh->nElem);

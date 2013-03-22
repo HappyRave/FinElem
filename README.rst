@@ -18,8 +18,20 @@ Homework3: Calcul de la longueur du littoral de la mer
 
 Programme permettant le gestion, le tri, et la sélection des segments dans un meshGrid. Une fois les segments extérieurs trouvés et sélectionnés, la détermination de la longueur du littoral est possible. 
 
+Homework4: Premier problème d'éléments fini
+-------------------------------------------
 
+Mise en pratique de la méthode des éléments finis pour l'équation de poisson pour différents mesh.
 
+Homework5: Les solveurs linéaires
+---------------------------------
+
+Améliorer les performances de notre de notre premier programme en rénumérotant les noeuds et en appliquant des soldeurs bandes
+
+Homework5: Augmenter l'ordre
+----------------------------
+
+Jusque là, nous avons utiliser des éléments (bi)linéaires. Nous allons augmenter la précisions des méthodes en augmentant l'ordre. Il s'agit donc de transformer nos éléments (bi)linéaires en éléments (bi)quadratique ou (bi)cubique en leur rajoutant des noeuds, et en calculant les fonctions de formes correspondantes.
 
 
 .. _NOAA: http://www.ngdc.noaa.gov/mgg/gdas/gd_designagrid.html
