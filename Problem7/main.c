@@ -33,7 +33,7 @@ int main(void)
     double theStartingTime = 0.0;
     double theDiscreteTime = 0.0;
     int    theIteration = 0;
-    double theTimeStep = 0.04;
+    double theTimeStep = 0.05;// 0.04
    
     
     glfemInit("MECA1120 : homework 7 ");
