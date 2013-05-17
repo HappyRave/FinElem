@@ -1,0 +1,7 @@
+\select@language {french}
+\contentsline {section}{\numberline {1}Estimation de l'ordre de pr\IeC {\'e}cision}{1}
+\contentsline {section}{\numberline {2}Validation}{2}
+\contentsline {section}{\numberline {3}Optimisation du code}{3}
+\contentsline {subsection}{\numberline {3.1}Diviser pour mieux r\IeC {\'e}gner}{4}
+\contentsline {subsection}{\numberline {3.2}Eviter le travail inutile}{4}
+\contentsline {section}{\numberline {4}Interface graphique}{4}
